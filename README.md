@@ -1,53 +1,53 @@
-# Task 1: Lost in Hubris - PROJECT MANAS
+# Task 2a — Kernels but not from Popcorns
+SVM classification with Linear,  Polynomial (degree 3), and RBF kernels on two datasets.
 
-Name: Sai Akshay Kumar
+ Datasets
+- Pulsar Star — 8 features, 12,528 samples, ~9% positive (imbalanced)
+- Genomic Cancer — 2 gene features, 3,000 samples, balanced
 
-Linear and Logistic Regression from scratch using only numpy. No sklearn.
+Results
 
-Datasets:
-- Szeged weather -> predict Temperature
-- Halloween candy -> predict winpercent + top-half classification
+ nPulsar Star
+| Kernel | Accuracy | Precision | Recall | F1 | ROC-AUC |
+|--------|----------|-----------|--------|----|---------|
+| Linear | 0.967 | 0.771 | 0.912 | 0.836 | 0.976|
+| Poly-3 | 0.969| 0.812 | 0.865 | 0.838| 0.969 |
+| RBF    | 0.968 | 0.781 | 0.900 | 0.836 | 0.970 |
 
-Run:
-    pip install numpy pandas matplotlib
-    python main.py
+  Genomic Cancer
+| Kernel | Accuracy | Precision | Recall | F1 | ROC-AUC |
+|--------|----------|-----------|--------|----|---------|
+| Linear | 0.873 | 0.866 | 0.883 | 0.875 | 0.947 |
+| Poly-3 | 0.865 | 0.874 | 0.853 | 0.863 | 0.959 |
+| RBF | 0.947| 0.932| 0.963 | 0.948 | 0.986 |
 
-## Why MSE isn't suitable
-MSE squares the error so outliers dominate. tested this by adding 5% outliers
-(+/- 60 C) to the weather training set and re-evaluating on the clean test set.
 
-    mse    -> 4.003
-    mae    -> 4.020
-    huber  -> 4.018
-The important lesson: MSE's gradient grows linearly with the error, so one
-huge outlier produces a huge update. MAE's gradient is always +/- 1, so outliers
-have bounded influence. Huber is a blend - quadratic when errors are small,
-linear when large - so it's robust without losing the smooth gradient.
+Pulsar: Basically three kernels had their own better performances like how polynomial has best precision while ref had best recall and linear has best ROC-AUC where all are are linearly separable
 
-## Output function to check it's process
+Genomic:RBF clearly won on every metric , using only 488 support vectors. W
+the classes are not linearly separable, so rbf’s implicit higher-dimensional
+mapping captures the curved boundary the linear kernel cannot.
 
-80/20 train/test split on everything. All numbers below are on the test set.
+Imbalance:Pulsar is ~9% positive, so `class_weight='balanced'` was used.
+Accuracy is misleading here — F1 and ROC-AUC are reported alongside.
 
-Weather (predicting Temperature from humidity, wind, pressure, visibility, hour, month):
+## Setup
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python src/svm_analysis.py
+cd ~/task2-svm-kernels
+pwd
+ls
+## Run
+python src/svm_analysis.py
 
-    mse    | RMSE  4.002 | MAE  3.169 | R2  0.8256
-    mae    | RMSE  4.019 | MAE  3.159 | R2  0.8241
-    huber  | RMSE  4.018 | MAE  3.159 | R2  0.8242
-    ols    | RMSE  4.002 | MAE  3.169 | R2  0.8256
+## Outputs
+results/metrics/kernel_comparison.csv
+results/figures/*.png
 
-OLS and MSE give identical results - expected, since OLS is the closed-form
-solution to MSE.
-
-Candy:
-
-    winpercent regression   | RMSE 12.238 | R2 0.4647
-    top-half classification | accuracy 0.7647
-
-To check overfitting I fit polynomials of increasing degree to a noisy sine
-wave. Train R2 stays near 0.94 while test R2 collapses into the billions:
-
-    deg= 1 | train R2 0.453 | test R2 -1.624
-    deg= 3 | train R2 0.942 | test R2 -1.937
-    deg= 5 | train R2 0.944 | test R2 -20.077
-    deg=10 | train R2 0.946 | test R2 -7562837.329
-    deg=15 | train R2 0.943 | test R2 -20187202275.673
+## Data
+Download from Kaggle:
+https://www.kaggle.com/datasets/colearninglounge/predicting-pulsar-starintermediate
+https://www.kaggle.com/datasets/brsahan/genomic-data-for-cancer
