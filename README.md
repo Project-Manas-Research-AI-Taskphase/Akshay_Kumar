@@ -51,3 +51,7 @@ wave. Train R2 stays near 0.94 while test R2 collapses into the billions:
     deg= 5 | train R2 0.944 | test R2 -20.077
     deg=10 | train R2 0.946 | test R2 -7562837.329
     deg=15 | train R2 0.943 | test R2 -20187202275.673
+
+
+# Task 3: Put your brains into your PC - Multi Layer Perceptrons
+   In this task we have learnt how neural networks work and maths behind the code whie understanding the essence of perceptrons, how perceptrons are related to neural networks too.
